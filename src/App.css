@@ -37,13 +37,15 @@
   }
 }
 
-#container {
-  width: 500px;
-  display: block;
-  margin: 0 auto;
+/* styles for questions */
+
+.check {
+  color: green;
 }
 
-/* styles for questions */
+.times {
+  color: red;
+}
 
 /* styles for answers */
 
@@ -55,3 +57,4 @@
   margin-right: 10px;
 }
 
+/* button styles */

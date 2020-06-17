@@ -23,7 +23,10 @@ class Quiz extends Component {
       correctAnswer: 1,
       selectedAnswer: 0,
       status: ''
-    }]
+    }],
+
+    score: null,
+    title: ""
   };
 
   handleCheckChange = (questionData) => {
@@ -43,26 +46,94 @@ class Quiz extends Component {
     });
   };
 
+  handleSubmit = (e) => {
+    e.preventDefault();
+
+    const res = window.confirm('Are you sure you want to submit?');
+
+    if (!res) {
+      return;
+    }
+
+    let totalCorrect = 0;
+
+    let updatedQuestions = this.state.questions.map(function(question) {
+      if (question.correctAnswer === question.selectedAnswer) {
+        let updatedQuestion = Object.assign({}, question, {
+          status: 'correct'
+        });
+
+        totalCorrect += 1;
+        return updatedQuestion;
+      } else {
+        let updatedQuestion = Object.assign({}, question, {
+          status: 'incorrect'
+        });
+
+        return updatedQuestion;        
+      }
+    }, this);
+
+    let updatedScore = Math.ceil((totalCorrect / this.state.questions.length) * 100);
+
+    this.setState({ 
+      score: updatedScore,
+      questions: updatedQuestions
+    });
+  };
+
+  handleReset = (e) => {
+    e.preventDefault();
+
+    let updatedQuestions = this.state.questions.map(function(question) {
+      let updatedQuestion = Object.assign({}, question, {
+        selectedAnswer: 0,
+        status: ''
+      });
+
+      return updatedQuestion;
+    });
+
+    this.setState({
+      questions: updatedQuestions,
+      score: null
+    });
+  };
+
   render() {
     return (
-      <form>
-        <ol className="question">
-        {this.state.questions.map(function(question, i) {
-          return (
-              <li key={i} className="item">
-                <Question 
-                  id={question.id}
-                  text={question.text}
-                  answers={question.answers}
-                  selectedAnswer={question.selectedAnswer}
-                  status={question.status}
-                  onSelectChange={this.handleCheckChange}
-                />
-              </li>
-          );
-        }, this)}
-        </ol>
-      </form>
+      <div className="container">
+        <h1 className="content">{this.state.title}</h1>
+        <Score score={this.state.score} />
+          <ol className="question">
+          {this.state.questions.map(function(question, i) {
+            return (
+                <li key={i} className="item">
+                  <Question 
+                    id={question.id}
+                    text={question.text}
+                    answers={question.answers}
+                    selectedAnswer={question.selectedAnswer}
+                    status={question.status}
+                    onSelectChange={this.handleCheckChange}
+                  />
+                </li>
+            );
+          }, this)}
+          </ol>
+        <button 
+          type="submit"
+          onClick={this.handleSubmit}
+          className="button is-dark"
+        >Submit Quiz
+        </button>
+        <button
+          type="click"
+          onClick={this.handleReset}
+          className="button is-light"
+        >Reset
+        </button>
+      </div>
     );
   }
 }
@@ -71,7 +142,12 @@ class Question extends Component {
   render() {
     return (
       <div>
-        <p>{this.props.text}</p>
+        <p>
+          <Status 
+            status={this.props.status}
+          />
+        {this.props.text}
+        </p>
         <div className="ui">
           {this.props.answers.map(function(answer, i) {
             return <Answer 
@@ -102,18 +178,57 @@ class Answer extends Component {
 
   render() {
     return (
-      <div className="ui radio checkbox">
-        <input 
-          type="radio" 
-          data-index={this.props.index}
-          name={this.props.questionID}
-          value={this.props.text}
-          checked={!!this.props.selected}
-          onChange={this.onCheckChange}
-        />
-        <label className="answer-label">{this.props.text}</label>
+      <div className="control">
+        <label className="radio">
+          <input 
+            type="radio" 
+            data-index={this.props.index}
+            name={this.props.questionID}
+            value={this.props.text}
+            checked={!!this.props.selected}
+            onChange={this.onCheckChange}
+          />
+          {this.props.text}
+        </label>
       </div>
     );
+  }
+}
+
+class Score extends Component {
+  render() {
+    if (this.props.score === null) {
+      return (
+        <p>Quiz Score: unsubmitted.</p>
+      );
+    } else {
+      return (
+        <p>Quiz Score: {this.props.score}</p>
+      );
+    }
+
+  }
+}
+
+class Status extends Component {
+  render() {
+    if (this.props.status === '') {
+      return (
+        <span></span>
+      );
+    } else if (this.props.status === 'correct') {
+      return (
+        <span className="status-icon">
+          <i className="check circle icon"></i>
+        </span>
+      );
+    } else {
+      return (
+        <span className="status-icon">
+          <i className="times circle icon"></i>
+        </span>
+      );      
+    }
   }
 }
 
