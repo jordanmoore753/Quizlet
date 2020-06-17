@@ -5,7 +5,7 @@ import Quiz from './Quiz.js';
 
 function App() {
   return (
-    <div className="container">
+    <div id="container">
       <Quiz />
     </div>
   );

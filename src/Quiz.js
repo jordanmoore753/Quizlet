@@ -23,10 +23,17 @@ class Quiz extends Component {
       correctAnswer: 1,
       selectedAnswer: 0,
       status: ''
-    }],
+    }, {
+      id: 3,
+      text: "What is 3 - (-8)?",
+      answers: [11, -3, -1, 5],
+      correctAnswer: 0,
+      selectedAnswer: 0,
+      status: ''
+    },],
 
     score: null,
-    title: ""
+    title: "1st Grade Math Quiz"
   };
 
   handleCheckChange = (questionData) => {
@@ -102,13 +109,14 @@ class Quiz extends Component {
 
   render() {
     return (
-      <div className="container">
-        <h1 className="content">{this.state.title}</h1>
+      <div className="content">
+        <h1 className="is-large">{this.state.title}</h1>
         <Score score={this.state.score} />
+        <hr className="quiz-separator" />
           <ol className="question">
           {this.state.questions.map(function(question, i) {
             return (
-                <li key={i} className="item">
+                <li key={i} className="is-size-5">
                   <Question 
                     id={question.id}
                     text={question.text}
@@ -124,13 +132,13 @@ class Quiz extends Component {
         <button 
           type="submit"
           onClick={this.handleSubmit}
-          className="button is-dark"
+          className="button is-success is-medium first-button is-rounded"
         >Submit Quiz
         </button>
         <button
           type="click"
           onClick={this.handleReset}
-          className="button is-light"
+          className="button is-light is-medium is-rounded"
         >Reset
         </button>
       </div>
@@ -142,7 +150,7 @@ class Question extends Component {
   render() {
     return (
       <div>
-        <p>
+        <p className="is-size-5">
           <Status 
             status={this.props.status}
           />
@@ -179,7 +187,7 @@ class Answer extends Component {
   render() {
     return (
       <div className="control">
-        <label className="radio">
+        <label className="radio is-size-5">
           <input 
             type="radio" 
             data-index={this.props.index}
@@ -199,11 +207,11 @@ class Score extends Component {
   render() {
     if (this.props.score === null) {
       return (
-        <p>Quiz Score: unsubmitted.</p>
+        <p className="is-size-5">Quiz Score: unsubmitted.</p>
       );
     } else {
       return (
-        <p>Quiz Score: {this.props.score}</p>
+        <p className="is-size-5">Quiz Score: {this.props.score}</p>
       );
     }
 
